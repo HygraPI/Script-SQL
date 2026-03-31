@@ -83,22 +83,27 @@ select * from sensor;
 
 
 CREATE TABLE registro (
-idRegistro INT PRIMARY KEY AUTO_INCREMENT,
+idRegistro INT,
 fkSensor INT,
+constraint pkComposta primary key (idRegistro, fkSensor),
 constraint fkSensor foreign key (fkSensor) references sensor(idSensor),
-temperatura int,
-umidade decimal(4,2) not null, 
+temperatura float,
+umidade int not null, 
 dtRegistro DATETIME DEFAULT current_timestamp
 );
 
 insert into registro values
-(default, 1, 27, 60, default),
-(default, 2, 20, 55.4, default),
-(default, 3, 24, 62, default),
-(default, 4, 25, 65, default),
-(default, 5, 28, 70.3, default),
-(default, 6, 17, 48.3, default),
-(default, 7, 21, 57.2, default);
+(1, 1, 27, 60, default),
+(1, 2, 20.5, 55, default),
+(1, 3, 24.1, 62, default),
+(1, 4, 25, 65, default),
+(1, 5, 28.8, 70, default),
+(1, 6, 17.3, 48, default),
+(1, 7, 21.2, 57, default),
+(2, 1, 23, 45, default),
+(3, 1, 25.2, 43, default),
+(2, 2, 22.8, 55, default);
+
 
 select * from registro;
 
