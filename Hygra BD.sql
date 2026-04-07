@@ -1,24 +1,25 @@
 CREATE DATABASE Hygra;
 USE Hygra;
 
-
+DROP DATABASE Hygra;
 
 CREATE TABLE empresa (
 idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
 nomeEmpresa VARCHAR (45) NOT NULL,
 cnpj VARCHAR (20),
 cidade VARCHAR (45),
-estado VARCHAR (45)
+estado VARCHAR (45),
+codigo_ativacao CHAR(5) NOT NULL
 );
 
 INSERT INTO empresa values
-(DEFAULT, 'Renner', '92754738000162', 'Cabreúva', 'São Paulo'),
-(DEFAULT, 'C&A','45242914000105', 'São Paulo', 'São Paulo'),
-(DEFAULT, 'Riachuelo', '33200056000149', 'Natal', 'Rio Grande do Norte'),
-(DEFAULT, 'Lacoste', '29511391000190', 'Brusque', 'Santa Catarina'),
-(DEFAULT, 'Levis', '43351097000190', 'São Paulo', 'São Paulo'),
-(DEFAULT, 'Pernambucanas', '42106529000134', 'Ribeirão preto',  'São Paulo'),
-(DEFAULT, 'Hering', '78876950000171', 'São Paulo', 'São Paulo');
+(DEFAULT, 'Renner', '92754738000162', 'Cabreúva', 'São Paulo', 'EDGWO'),
+(DEFAULT, 'C&A','45242914000105', 'São Paulo', 'São Paulo', 'SVKEO'),
+(DEFAULT, 'Riachuelo', '33200056000149', 'Natal', 'Rio Grande do Norte', 'POMTS'),
+(DEFAULT, 'Lacoste', '29511391000190', 'Brusque', 'Santa Catarina', 'RTSNJ'),
+(DEFAULT, 'Levis', '43351097000190', 'São Paulo', 'São Paulo', 'OASJG'),
+(DEFAULT, 'Pernambucanas', '42106529000134', 'Ribeirão preto',  'São Paulo', 'PTIYM'),
+(DEFAULT, 'Hering', '78876950000171', 'São Paulo', 'São Paulo', 'ASAIE');
 
 SELECT * FROM empresa;
 
@@ -47,7 +48,7 @@ CREATE TABLE lugar (
 idLugar INT PRIMARY KEY AUTO_INCREMENT,
 tipoLugar VARCHAR (15)
 	CONSTRAINT chkTipo CHECK (tipoLugar IN ('ESTOQUE', 'ARMAZÉM')),
-setorlugar INT,
+setorLugar INT,
 fkEmpresa INT,
 	CONSTRAINT fkEmpresaLugar FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
 );
