@@ -1,2 +1,2 @@
 
-<img width="1175" height="643" alt="modelagemHygraImagem" src="https://github.com/user-attachments/assets/e8b06c4c-32df-41c1-a35a-9224c1de92ab" />
+<img width="1195" height="565" alt="modelagemHygra" src="https://github.com/user-attachments/assets/5a018503-ed1e-49cc-afa0-aaba07e2ab42" />
