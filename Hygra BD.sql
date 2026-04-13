@@ -1,8 +1,6 @@
 CREATE DATABASE Hygra;
 USE Hygra;
 
-DROP DATABASE Hygra;
-
 CREATE TABLE empresa (
 idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
 nomeEmpresa VARCHAR (45) NOT NULL,
@@ -43,7 +41,6 @@ INSERT INTO usuario VALUES
 
 SELECT * FROM usuario;
 
-
 CREATE TABLE lugar (
 idLugar INT PRIMARY KEY AUTO_INCREMENT,
 tipoLugar VARCHAR (15)
@@ -81,7 +78,6 @@ INSERT INTO sensor VALUES
 (DEFAULT, 7);
 
 SELECT * FROM sensor;
-
 
 CREATE TABLE registro (
 idRegistro INT,
