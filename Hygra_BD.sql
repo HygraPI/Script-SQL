@@ -1,5 +1,5 @@
-CREATE DATABASE Hygra;
-USE Hygra;
+CREATE DATABASE hygra;
+USE hygra;
 
 CREATE TABLE empresa (
 idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
@@ -79,6 +79,15 @@ INSERT INTO sensor VALUES
 
 SELECT * FROM sensor;
 
+create table leitura(
+idRegistro int primary key auto_increment,
+fkSensor int,
+constraint fkSensor foreign key (fkSensor) references sensor(idSensor),
+umidade float not null,
+dtRegistro datetime default current_timestamp
+);
+
+/*
 CREATE TABLE registro (
 idRegistro INT,
 fkSensor INT,
@@ -87,6 +96,7 @@ CONSTRAINT fkSensor FOREIGN KEY (fkSensor) REFERENCES sensor(idSensor),
 umidade INT NOT NULL, 
 dtRegistro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
 
 INSERT INTO registro VALUES
 (1, 1, 60, DEFAULT),
@@ -97,7 +107,15 @@ INSERT INTO registro VALUES
 (1, 7, 57, DEFAULT),
 (3, 1, 43, DEFAULT),
 (2, 2, 55, DEFAULT);
+*/
 
+insert into registro(fkSensor, umidade) values
+(1, 20),
+(1, 30),
+(1, 40),
+(1, 50),
+(1, 60),
+(1, 70);
 
 SELECT * FROM registro;
 
