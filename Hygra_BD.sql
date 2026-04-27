@@ -84,32 +84,10 @@ idRegistro int primary key auto_increment,
 fkSensor int,
 constraint fkSensor foreign key (fkSensor) references sensor(idSensor),
 umidade float not null,
-dtRegistro datetime default current_timestamp
+dtLeitura datetime default current_timestamp
 );
 
-/*
-CREATE TABLE registro (
-idRegistro INT,
-fkSensor INT,
-CONSTRAINT pkComposta PRIMARY KEY (idRegistro, fkSensor),
-CONSTRAINT fkSensor FOREIGN KEY (fkSensor) REFERENCES sensor(idSensor),
-umidade INT NOT NULL, 
-dtRegistro DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-
-INSERT INTO registro VALUES
-(1, 1, 60, DEFAULT),
-(1, 2, 55, DEFAULT),
-(1, 3, 62, DEFAULT),
-(1, 4, 56, DEFAULT),
-(1, 6, 48, DEFAULT),
-(1, 7, 57, DEFAULT),
-(3, 1, 43, DEFAULT),
-(2, 2, 55, DEFAULT);
-*/
-
-insert into registro(fkSensor, umidade) values
+insert into leitura(fkSensor, umidade) values
 (1, 20),
 (1, 30),
 (1, 40),
@@ -117,14 +95,14 @@ insert into registro(fkSensor, umidade) values
 (1, 60),
 (1, 70);
 
-SELECT * FROM registro;
+SELECT * FROM leitura;
 
 
 SELECT * FROM 
 empresa JOIN usuario ON usuario.fkEmpresa = idEmpresa
 JOIN lugar ON lugar.fkEmpresa = idEmpresa
 JOIN sensor ON fkLugar = idLugar
-JOIN registro ON fkSensor = idSensor;
+JOIN leitura ON fkSensor = idSensor;
 
 SELECT 
 idEmpresa AS 'ID',
@@ -134,9 +112,9 @@ tipoLugar AS 'Tipo de lugar',
 setorlugar AS 'Setor', 
 idSensor AS 'Sensor', 
 umidade, 
-dtRegistro AS 'Data de registro'
+dtLeitura AS 'Data de registro'
 FROM 
 empresa JOIN usuario ON usuario.fkEmpresa = idEmpresa
 JOIN lugar ON lugar.fkEmpresa = idEmpresa
 JOIN sensor ON fkLugar = idLugar
-JOIN registro ON fkSensor = idSensor;
+JOIN leitura ON fkSensor = idSensor;
