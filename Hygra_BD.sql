@@ -112,9 +112,40 @@ tipoLugar AS 'Tipo de lugar',
 setorlugar AS 'Setor', 
 idSensor AS 'Sensor', 
 umidade, 
-dtLeitura AS 'Data de registro'
+dtRegistro AS 'Data de registro'
 FROM 
 empresa JOIN usuario ON usuario.fkEmpresa = idEmpresa
 JOIN lugar ON lugar.fkEmpresa = idEmpresa
 JOIN sensor ON fkLugar = idLugar
 JOIN leitura ON fkSensor = idSensor;
+
+SELECT 
+idEmpresa AS 'ID',
+nomeEmpresa AS 'Empresa', 
+nomeFuncionario AS 'Dono da empresa', 
+tipoLugar AS 'Tipo de lugar',  
+setorlugar AS 'Setor', 
+idSensor AS 'Sensor', 
+umidade, 
+dtRegistro AS 'Data de registro'
+FROM 
+empresa JOIN usuario ON usuario.fkEmpresa = idEmpresa
+JOIN lugar ON lugar.fkEmpresa = idEmpresa
+JOIN sensor ON fkLugar = idLugar
+JOIN leitura ON fkSensor = idSensor;
+
+SELECT 
+nomeEmpresa AS 'Empresa',
+idSensor AS 'Sensor',
+umidade,
+CASE 
+    WHEN umidade < 30 THEN 'Baixa'
+    WHEN umidade <= 60 THEN 'Normal'
+    ELSE 'Alta'
+END AS 'Situação'
+FROM empresa 
+JOIN usuario ON usuario.fkEmpresa = idEmpresa
+JOIN lugar ON lugar.fkEmpresa = idEmpresa
+JOIN sensor ON fkLugar = idLugar
+JOIN leitura ON fkSensor = idSensor;
+
