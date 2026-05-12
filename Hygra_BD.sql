@@ -43,11 +43,12 @@ SELECT * FROM usuario;
 
 CREATE TABLE lugar (
 idLugar INT PRIMARY KEY AUTO_INCREMENT,
-tipoLugar VARCHAR (15)
+tipoLugar VARCHAR (15),
 	CONSTRAINT chkTipo CHECK (tipoLugar IN ('ESTOQUE', 'ARMAZÉM')),
 setorLugar INT,
 fkEmpresa INT,
-	CONSTRAINT fkEmpresaLugar FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
+	CONSTRAINT fkEmpresaLugar FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa),
+tipoTecido VARCHAR (45))
 );
 
 INSERT INTO lugar VALUES
