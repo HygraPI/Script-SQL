@@ -26,6 +26,7 @@ idUsuario INT PRIMARY KEY AUTO_INCREMENT,
 nomeFuncionario VARCHAR (45) NOT NULL,  
 email VARCHAR (45) NOT NULL UNIQUE,
 senha VARCHAR (45) NOT NULL, 
+tipo varchar(15),
 fkEmpresa int,
 CONSTRAINT fkEmpresa FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
 );
@@ -48,17 +49,20 @@ tipoLugar VARCHAR (15),
 setorLugar INT,
 fkEmpresa INT,
 	CONSTRAINT fkEmpresaLugar FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa),
-tipoTecido VARCHAR (45))
+tipoTecido VARCHAR (45)
 );
 
+desc lugar;
+select * from empresa;
+
 INSERT INTO lugar VALUES
-(DEFAULT, 'ESTOQUE', 1, 5),
-(DEFAULT, 'ARMAZÉM', 3, 4),
-(DEFAULT, 'ARMAZÉM', 3, 3),
-(DEFAULT, 'ESTOQUE', 2, 2),
-(DEFAULT, 'ARMAZÉM', 1, 6),
-(DEFAULT, 'ESTOQUE', 5, 7),
-(DEFAULT, 'ESTOQUE', 4, 1);
+(DEFAULT, 'ESTOQUE', 1, 5, 'Algodão'),
+(DEFAULT, 'ARMAZÉM', 3, 4, 'Linho'),
+(DEFAULT, 'ARMAZÉM', 3, 3,'Algodão'),
+(DEFAULT, 'ESTOQUE', 2, 2, 'Linho'),
+(DEFAULT, 'ARMAZÉM', 1, 6, 'Lã'),
+(DEFAULT, 'ESTOQUE', 5, 7, 'Linho'),
+(DEFAULT, 'ESTOQUE', 4, 1,'Algodão');
 
 SELECT * FROM lugar;
 
