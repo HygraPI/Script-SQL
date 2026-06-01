@@ -121,9 +121,9 @@ idRegistro int primary key auto_increment,
 fkSensor int  NOT NULL,
 umidade float not null,
 dtLeitura datetime default current_timestamp,
-fkAlerta int not null,
+fkAlerta int not null unique,
 constraint fkSensor foreign key (fkSensor) references sensor(idSensor),
-constraint foreign key (fkAlerta) references alerta(idAlerta)
+constraint fkAlerta foreign key (fkAlerta) references alerta(idAlerta)
 );
 
 select * from leitura;
