@@ -4,9 +4,9 @@ USE hygra;
 CREATE TABLE empresa (
 idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
 nomeEmpresa VARCHAR (45) NOT NULL,
-cnpj VARCHAR (20),
-cidade VARCHAR (45),
-estado VARCHAR (45),
+cnpj VARCHAR (20) NOT NULL,
+cidade VARCHAR (45) NOT NULL,
+estado VARCHAR (45) NOT NULL,
 codigo_ativacao CHAR(5) NOT NULL
 );
 
@@ -25,51 +25,66 @@ CREATE TABLE usuario (
 idUsuario INT PRIMARY KEY AUTO_INCREMENT,
 nomeFuncionario VARCHAR (45) NOT NULL,  
 email VARCHAR (45) NOT NULL UNIQUE,
-senha VARCHAR (45) NOT NULL, 
-tipo varchar(15),
-fkEmpresa int,
+senha VARCHAR (45) NOT NULL,
+cpf char(11) unique NOT NULL, 
+tipo varchar(20) default 'padrao',
+fkEmpresa int  NOT NULL,
 CONSTRAINT fkEmpresa FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
 );
 
 INSERT INTO usuario VALUES
-(DEFAULT, 'Fabio Adegas Faccio', 'fabioadegas@gmail.com', 'fabioadegas123', 1),
-(DEFAULT, 'Paulo Correa', 'paulocorrea@outlook.com', 'paulo123', 2),
-(DEFAULT, 'Flávio Rocha', 'flaviorocha@gmail.com', 'flaviorocha123', 3),
-(DEFAULT, 'Éric Vallat', 'ericvallat@outlook.com', 'vallat123', 4),
-(DEFAULT, 'Leonid Radvinsky', 'leonid@gmail.com', 'leonid123', 5),
-(DEFAULT, 'Ricardo Doebeli', 'ricardodoebelli@gmail.com', 'doebelli123', 6),
-(DEFAULT, 'David Python', 'davidphyton@outlook.com', 'python123', 7);
+(DEFAULT, 'Fabio Adegas Faccio', 'fabioadegas@gmail.com', 'fabioadegas123', '12345678901', 'Suporte', 1),
+(DEFAULT, 'Paulo Correa', 'paulocorrea@outlook.com', 'paulo123', '22345678901', default, 2),
+(DEFAULT, 'Flávio Rocha', 'flaviorocha@gmail.com', 'flaviorocha123', '32345678901', 'Suporte', 3),
+(DEFAULT, 'Éric Vallat', 'ericvallat@outlook.com', 'vallat123', '42345678901', default, 4),
+(DEFAULT, 'Leonid Radvinsky', 'leonid@gmail.com', 'leonid123', '52345678901', 'Suporte', 5),
+(DEFAULT, 'Ricardo Doebeli', 'ricardodoebelli@gmail.com', 'doebelli123', '62345678901', default, 6),
+(DEFAULT, 'David Python', 'davidphyton@outlook.com', 'python123', '72345678901', 'Suporte', 7);
 
 SELECT * FROM usuario;
 
-CREATE TABLE lugar (
-idLugar INT PRIMARY KEY AUTO_INCREMENT,
-tipoLugar VARCHAR (15),
-	CONSTRAINT chkTipo CHECK (tipoLugar IN ('ESTOQUE', 'ARMAZÉM')),
-setorLugar INT,
-fkEmpresa INT,
-	CONSTRAINT fkEmpresaLugar FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa),
-tipoTecido VARCHAR (45)
+create table tecido(
+idTecido int primary key auto_increment,
+nome varchar(45) not null unique,
+maxUmidade float not null,
+minUmidade float not null
 );
 
-desc lugar;
+insert into tecido(nome, maxUmidade, minUmidade) values
+('Seda', 40, 50),
+('Lã', 55, 65),
+('Algodão', 45, 55),
+('Linho', 50, 60);
+
+select * from tecido;
+
+CREATE TABLE lugar (
+idLugar INT PRIMARY KEY AUTO_INCREMENT,
+tipo VARCHAR (15)  NOT NULL,
+setor INT  NOT NULL,
+fkEmpresa INT  NOT NULL,
+fkTecido int  NOT NULL,
+CONSTRAINT fkEmpresaLugar FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa),
+CONSTRAINT chkTipo CHECK (tipo IN ('ESTOQUE', 'ARMAZÉM')),
+constraint fkTecido foreign key (fkTecido) references tecido(idTecido)
+);
+
 select * from empresa;
 
-INSERT INTO lugar VALUES
-(DEFAULT, 'ESTOQUE', 1, 5, 'Algodão'),
-(DEFAULT, 'ARMAZÉM', 3, 4, 'Linho'),
-(DEFAULT, 'ARMAZÉM', 3, 3,'Algodão'),
-(DEFAULT, 'ESTOQUE', 2, 2, 'Linho'),
-(DEFAULT, 'ARMAZÉM', 1, 6, 'Lã'),
-(DEFAULT, 'ESTOQUE', 5, 7, 'Linho'),
-(DEFAULT, 'ESTOQUE', 4, 1,'Algodão');
+INSERT INTO lugar(idLugar, tipo, setor, fkEmpresa, fkTecido) VALUES
+(DEFAULT, 'ESTOQUE', 1, 5,1),
+(DEFAULT, 'ARMAZÉM', 3, 4,2),
+(DEFAULT, 'ARMAZÉM', 3, 3,3),
+(DEFAULT, 'ESTOQUE', 2, 2,4),
+(DEFAULT, 'ARMAZÉM', 1, 6,1),
+(DEFAULT, 'ESTOQUE', 5, 7,2),
+(DEFAULT, 'ESTOQUE', 4, 1,3);
 
 SELECT * FROM lugar;
 
-
 CREATE TABLE sensor (
 idSensor INT PRIMARY KEY AUTO_INCREMENT,
-fkLugar INT,
+fkLugar INT  NOT NULL,
 CONSTRAINT  fkLugar FOREIGN KEY (fkLugar) REFERENCES lugar(IdLugar)
 );
 
@@ -84,24 +99,44 @@ INSERT INTO sensor VALUES
 
 SELECT * FROM sensor;
 
-create table leitura(
-idRegistro int primary key auto_increment,
-fkSensor int,
-constraint fkSensor foreign key (fkSensor) references sensor(idSensor),
-umidade float not null,
-dtLeitura datetime default current_timestamp
+create table alerta(
+	idAlerta int primary key auto_increment,
+    dataAlerta datetime default current_timestamp,
+    tipo varchar(45)  NOT NULL
+    constraint ck_tipoAlerta check(tipo = 'umidade alta' or tipo = 'umidade baixa' or tipo = 'umidade correta')
 );
 
-insert into leitura(fkSensor, umidade) values
-(1, 20),
-(1, 30),
-(1, 40),
-(1, 50),
-(1, 60),
-(1, 70);
+insert into alerta(tipo) values
+('umidade baixa'),
+('umidade baixa'),
+('umidade baixa'),
+('umidade alta'),
+('umidade alta'),
+('umidade correta');
+
+select * from alerta;
+
+create table leitura(
+idRegistro int primary key auto_increment,
+fkSensor int  NOT NULL,
+umidade float not null,
+dtLeitura datetime default current_timestamp,
+fkAlerta int not null,
+constraint fkSensor foreign key (fkSensor) references sensor(idSensor),
+constraint foreign key (fkAlerta) references alerta(idAlerta)
+);
+
+select * from leitura;
+
+insert into leitura(fkSensor, umidade, fkAlerta) values
+(1, 20, 1),
+(1, 30, 2),
+(1, 40, 3),
+(1, 50, 6),
+(1, 60, 4),
+(1, 70, 5);
 
 SELECT * FROM leitura;
-
 
 SELECT * FROM 
 empresa JOIN usuario ON usuario.fkEmpresa = idEmpresa
