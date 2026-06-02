@@ -101,18 +101,16 @@ SELECT * FROM sensor;
 
 create table alerta(
 	idAlerta int primary key auto_increment,
-    dataAlerta datetime default current_timestamp,
-    tipo varchar(45)  NOT NULL
-    constraint ck_tipoAlerta check(tipo = 'umidade alta' or tipo = 'umidade baixa' or tipo = 'umidade correta')
+    tipo varchar(45),
+    constraint ck_tipoAlerta check(tipo = 'umidade alta' or tipo = 'umidade baixa' or tipo = 'umidade baixa crítica' OR tipo = 'umidade alta crítica')
 );
 
 insert into alerta(tipo) values
-('umidade baixa'),
-('umidade baixa'),
+('umidade baixa crítica'),
 ('umidade baixa'),
 ('umidade alta'),
-('umidade alta'),
-('umidade correta');
+('umidade alta crítica');
+
 
 select * from alerta;
 
@@ -121,7 +119,7 @@ idRegistro int primary key auto_increment,
 fkSensor int  NOT NULL,
 umidade float not null,
 dtLeitura datetime default current_timestamp,
-fkAlerta int not null unique,
+fkAlerta int,
 constraint fkSensor foreign key (fkSensor) references sensor(idSensor),
 constraint fkAlerta foreign key (fkAlerta) references alerta(idAlerta)
 );
