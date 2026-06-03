@@ -1,6 +1,7 @@
 CREATE DATABASE hygra;
 USE hygra;
 
+
 CREATE TABLE empresa (
 idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
 nomeEmpresa VARCHAR (45) NOT NULL,
@@ -101,16 +102,18 @@ SELECT * FROM sensor;
 
 create table alerta(
 	idAlerta int primary key auto_increment,
-    tipo varchar(45),
-    constraint ck_tipoAlerta check(tipo = 'umidade alta' or tipo = 'umidade baixa' or tipo = 'umidade baixa crítica' OR tipo = 'umidade alta crítica')
+    dataAlerta datetime default current_timestamp,
+    tipo varchar(45)  NOT NULL
+    constraint ck_tipoAlerta check(tipo = 'umidade alta' or tipo = 'umidade baixa' or tipo = 'umidade correta')
 );
 
 insert into alerta(tipo) values
-('umidade baixa crítica'),
+('umidade baixa'),
+('umidade baixa'),
 ('umidade baixa'),
 ('umidade alta'),
-('umidade alta crítica');
-
+('umidade alta'),
+('umidade correta');
 
 select * from alerta;
 
@@ -119,7 +122,7 @@ idRegistro int primary key auto_increment,
 fkSensor int  NOT NULL,
 umidade float not null,
 dtLeitura datetime default current_timestamp,
-fkAlerta int,
+fkAlerta int not null unique,
 constraint fkSensor foreign key (fkSensor) references sensor(idSensor),
 constraint fkAlerta foreign key (fkAlerta) references alerta(idAlerta)
 );
@@ -142,48 +145,27 @@ JOIN lugar ON lugar.fkEmpresa = idEmpresa
 JOIN sensor ON fkLugar = idLugar
 JOIN leitura ON fkSensor = idSensor;
 
-SELECT 
+CREATE VIEW ViewKPIS AS SELECT 
 idEmpresa AS 'ID',
 nomeEmpresa AS 'Empresa', 
 nomeFuncionario AS 'Dono da empresa', 
-tipoLugar AS 'Tipo de lugar',  
-setorlugar AS 'Setor', 
+lugar.tipo AS 'Tipo de lugar',  
+setor AS 'Setor', 
 idSensor AS 'Sensor', 
-umidade, 
-dtRegistro AS 'Data de registro'
+concat(umidade, '%') as Umidade,
+alerta.tipo as Alerta,
+time(dtLeitura) AS Horário
 FROM 
 empresa JOIN usuario ON usuario.fkEmpresa = idEmpresa
 JOIN lugar ON lugar.fkEmpresa = idEmpresa
 JOIN sensor ON fkLugar = idLugar
-JOIN leitura ON fkSensor = idSensor;
+JOIN leitura ON fkSensor = idSensor
+JOIN alerta on fkAlerta = idAlerta
+WHERE alerta.tipo IS NOT NULL
+ORDER BY dtLeitura DESC
+LIMIT 1;
 
-SELECT 
-idEmpresa AS 'ID',
-nomeEmpresa AS 'Empresa', 
-nomeFuncionario AS 'Dono da empresa', 
-tipoLugar AS 'Tipo de lugar',  
-setorlugar AS 'Setor', 
-idSensor AS 'Sensor', 
-umidade, 
-dtRegistro AS 'Data de registro'
-FROM 
-empresa JOIN usuario ON usuario.fkEmpresa = idEmpresa
-JOIN lugar ON lugar.fkEmpresa = idEmpresa
-JOIN sensor ON fkLugar = idLugar
-JOIN leitura ON fkSensor = idSensor;
 
-SELECT 
-nomeEmpresa AS 'Empresa',
-idSensor AS 'Sensor',
-umidade,
-CASE 
-    WHEN umidade < 30 THEN 'Baixa'
-    WHEN umidade <= 60 THEN 'Normal'
-    ELSE 'Alta'
-END AS 'Situação'
-FROM empresa 
-JOIN usuario ON usuario.fkEmpresa = idEmpresa
-JOIN lugar ON lugar.fkEmpresa = idEmpresa
-JOIN sensor ON fkLugar = idLugar
-JOIN leitura ON fkSensor = idSensor;
+SELECT * FROM ViewKPIS;
+SELECT * FROM ViewDadosGerais;
 
