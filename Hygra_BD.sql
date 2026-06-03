@@ -103,39 +103,40 @@ SELECT * FROM sensor;
 create table alerta(
 	idAlerta int primary key auto_increment,
     dataAlerta datetime default current_timestamp,
-    tipo varchar(45)  NOT NULL
-    constraint ck_tipoAlerta check(tipo = 'umidade alta' or tipo = 'umidade baixa' or tipo = 'umidade correta')
+    tipo varchar(45) 
+    constraint ck_tipoAlerta check(tipo = 'umidade alta' or tipo = 'umidade baixa' or tipo = 'umidade baixa crítica'  or tipo = 'umidade alta crítica')
 );
 
+
+
 insert into alerta(tipo) values
-('umidade baixa'),
-('umidade baixa'),
+('umidade baixa crítica'),
 ('umidade baixa'),
 ('umidade alta'),
-('umidade alta'),
-('umidade correta');
+('umidade alta crítica');
 
 select * from alerta;
 
 create table leitura(
-idRegistro int primary key auto_increment,
+idLeitura int primary key auto_increment,
 fkSensor int  NOT NULL,
 umidade float not null,
 dtLeitura datetime default current_timestamp,
-fkAlerta int not null unique,
+fkAlerta int,
 constraint fkSensor foreign key (fkSensor) references sensor(idSensor),
 constraint fkAlerta foreign key (fkAlerta) references alerta(idAlerta)
 );
+
 
 select * from leitura;
 
 insert into leitura(fkSensor, umidade, fkAlerta) values
 (1, 20, 1),
-(1, 30, 2),
-(1, 40, 3),
-(1, 50, 6),
-(1, 60, 4),
-(1, 70, 5);
+(1, 30, 1),
+(1, 40, 2),
+(1, 50, null),
+(1, 60, 3),
+(1, 70, 4);
 
 SELECT * FROM leitura;
 
@@ -165,7 +166,7 @@ WHERE alerta.tipo IS NOT NULL
 ORDER BY dtLeitura DESC
 LIMIT 1;
 
-CREATE VIEW Viewgráficos AS SELECT 
+CREATE VIEW Viewgraficos AS SELECT 
 idEmpresa AS 'ID',
 nomeEmpresa AS 'Empresa', 
 nomeFuncionario AS 'Dono da empresa', 
@@ -182,6 +183,36 @@ JOIN sensor ON fkLugar = idLugar
 JOIN leitura ON fkSensor = idSensor
 JOIN alerta on fkAlerta = idAlerta;
 
+create view vw_sensores as 
+select 
+s.idSensor as 'Sensor',
+lgr.setor as 'localização',
+ltr.umidade as 'Última leitura',
+ifnull(a.tipo, 'umidade ideal') as 'Status de alerta'
+from lugar as lgr
+join sensor as s on lgr.idLugar = s.fkLugar
+join leitura as ltr on ltr.idLeitura = (
+        select max(l2.idLeitura)
+        from leitura as l2
+        where l2.fkSensor = s.idSensor
+    )
+left join alerta a
+    on ltr.fkAlerta = a.idAlerta;
+
+
+
+select * from sensor;
+select * from leitura;
+select * from lugar;
+
+select * from vw_sensores;
+
+
 SELECT * FROM ViewKPIS;
-SELECT * FROM ViewGráficos;
+SELECT * FROM Viewgraficos;
+
+select * from leitura;
+select * from sensor;
+
+
 
