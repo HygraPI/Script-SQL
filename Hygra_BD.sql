@@ -165,7 +165,23 @@ WHERE alerta.tipo IS NOT NULL
 ORDER BY dtLeitura DESC
 LIMIT 1;
 
+CREATE VIEW Viewgráficos AS SELECT 
+idEmpresa AS 'ID',
+nomeEmpresa AS 'Empresa', 
+nomeFuncionario AS 'Dono da empresa', 
+lugar.tipo AS 'Tipo de lugar',  
+setor AS 'Setor', 
+idSensor AS 'Sensor', 
+concat(umidade, '%') AS Umidade, 
+alerta.tipo as Alerta,
+dtLeitura AS 'Data de registro'
+FROM 
+empresa JOIN usuario ON usuario.fkEmpresa = idEmpresa
+JOIN lugar ON lugar.fkEmpresa = idEmpresa
+JOIN sensor ON fkLugar = idLugar
+JOIN leitura ON fkSensor = idSensor
+JOIN alerta on fkAlerta = idAlerta;
 
 SELECT * FROM ViewKPIS;
-SELECT * FROM ViewDadosGerais;
+SELECT * FROM ViewGráficos;
 
