@@ -185,10 +185,10 @@ JOIN alerta on fkAlerta = idAlerta;
 
 create view vw_sensores as 
 select 
-s.idSensor as 'Sensor',
-lgr.setor as 'localização',
-ltr.umidade as 'Última leitura',
-ifnull(a.tipo, 'umidade ideal') as 'Status de alerta'
+s.idSensor as 'idSensor',
+lgr.setor as 'localizacao',
+ltr.umidade as 'ultimaLeitura',
+ifnull(a.tipo, 'umidadeIdeal') as 'StatusDeAlerta'
 from lugar as lgr
 join sensor as s on lgr.idLugar = s.fkLugar
 join leitura as ltr on ltr.idLeitura = (
@@ -199,14 +199,12 @@ join leitura as ltr on ltr.idLeitura = (
 left join alerta a
     on ltr.fkAlerta = a.idAlerta;
 
+select * from vw_sensores;
 
 
 select * from sensor;
 select * from leitura;
 select * from lugar;
-
-select * from vw_sensores;
-
 
 SELECT * FROM ViewKPIS;
 SELECT * FROM Viewgraficos;
