@@ -136,7 +136,37 @@ insert into leitura(fkSensor, umidade, fkAlerta) values
 (1, 40, 2),
 (1, 50, null),
 (1, 60, 3),
-(1, 70, 4);
+(1, 70, 4),
+(2, 25, 1),
+(2, 35, 2),
+(2, 45, null),
+(2, 55, 3),
+(2, 65, 4),
+(3, 18, 1),
+(3, 28, 1),
+(3, 38, 2),
+(3, 48, null),
+(3, 58, 3),
+(4, 22, 1),
+(4, 32, 2),
+(4, 42, null),
+(4, 52, 3),
+(4, 62, 4),
+(5, 15, 1),
+(5, 25, 1),
+(5, 35, 2),
+(5, 45, null),
+(5, 55, 3),
+(6, 27, 1),
+(6, 37, 2),
+(6, 47, null),
+(6, 57, 3),
+(6, 67, 4),
+(7, 27, 1),
+(7, 37, 2),
+(7, 47, null),
+(7, 57, 3),
+(7, 69, 4);
 
 SELECT * FROM leitura;
 
@@ -166,10 +196,9 @@ WHERE alerta.tipo IS NOT NULL
 ORDER BY dtLeitura DESC
 LIMIT 1;
 
-CREATE VIEW Viewgraficos AS SELECT 
+alter VIEW Viewgraficos AS SELECT 
 idEmpresa AS 'ID',
 nomeEmpresa AS 'Empresa', 
-nomeFuncionario AS 'Dono da empresa', 
 lugar.tipo AS 'Tipo de lugar',  
 setor AS 'Setor', 
 idSensor AS 'Sensor', 
@@ -183,34 +212,40 @@ JOIN sensor ON fkLugar = idLugar
 JOIN leitura ON fkSensor = idSensor
 JOIN alerta on fkAlerta = idAlerta;
 
-create view vw_sensores as 
+-- select * from empresa as e
+-- join lugar as lu on e.idEmpresa = lu.fkEmpresa
+-- join sensor as s on lu.idLugar = s.fkLugar
+-- join tecido as t on lu.fkTecido = t.idTecido
+-- join leitura as le on s.idSensor = le.fkSensor
+-- join alerta as a on le.fkAlerta = a.idAlerta;
+
+select * from Viewgraficos;
+
+/**/
+alter view vw_sensoresPorEmpresa as 
 select 
+e.idEmpresa as 'idEmpresa',
+e.nomeEmpresa as 'nomeEmpresa', 
+lu.idLugar as 'idLugar', 
+lu.setor as 'idSetor', 
 s.idSensor as 'idSensor',
-lgr.setor as 'localizacao',
-ltr.umidade as 'ultimaLeitura',
-ifnull(a.tipo, 'umidadeIdeal') as 'StatusDeAlerta'
-from lugar as lgr
-join sensor as s on lgr.idLugar = s.fkLugar
-join leitura as ltr on ltr.idLeitura = (
-        select max(l2.idLeitura)
-        from leitura as l2
-        where l2.fkSensor = s.idSensor
-    )
-left join alerta a
-    on ltr.fkAlerta = a.idAlerta;
+(select umidade from leitura where fkSensor = s.idSensor order by umidade desc limit 1) AS 'leitura',
+max(le.dtLeitura) as 'data',
+ifnull((select tipo from alerta where (select fkAlerta from leitura where fkSensor = s.idSensor limit 1) = idAlerta limit 1), 'umidade ideal') as 'StatusDeAlerta'
+from empresa as e
+join lugar as lu on e.idEmpresa = lu.fkEmpresa
+join tecido as t on lu.fkTecido = t.idTecido
+join sensor as s on lu.idLugar = s.fkLugar
+join leitura as le on s.idSensor = le.fkSensor
+left join alerta as a on le.fkAlerta = a.idAlerta -- aqui a gente define o id da empresa que a gente vai pegar oa sesores
+group by s.idSensor;
+/**/
 
-select * from vw_sensores;
+select tipo from alerta where 1 = idAlerta limit 1;
 
-
+select * from vw_sensoresPorEmpresa;
+select * from vw_sensoresPorEmpresa where idEmpresa = 1;
 select * from sensor;
+select * from alerta;
 select * from leitura;
-select * from lugar;
-
-SELECT * FROM ViewKPIS;
-SELECT * FROM Viewgraficos;
-
-select * from leitura;
-select * from sensor;
-
-
-
+select * from usuario;
