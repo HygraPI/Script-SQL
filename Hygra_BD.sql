@@ -220,44 +220,26 @@ JOIN alerta on fkAlerta = idAlerta;
 -- join alerta as a on le.fkAlerta = a.idAlerta;
 
 select * from Viewgraficos;
-/**/
-CREATE VIEW vw_sensoresPorEmpresa AS
-SELECT
-    e.idEmpresa,
-    e.nomeEmpresa,
-    lu.idLugar,
-    lu.setor AS idSetor,
-    s.idSensor,
-    t.nome AS tecido,
 
-    le.umidade AS leitura,
-    le.dtLeitura AS data,
+create view vw_sensoresPorEmpresa as 
+select 
+e.idEmpresa as 'idEmpresa',
+e.nomeEmpresa as 'nomeEmpresa', 
+lu.idLugar as 'idLugar', 
+lu.setor as 'idSetor', 
+s.idSensor as 'idSensor',
+(select umidade from leitura where fkSensor = s.idSensor order by umidade desc limit 1) AS 'leitura',
+max(le.dtLeitura) as 'data',
+ifnull((select tipo from alerta where (select fkAlerta from leitura where fkSensor = s.idSensor limit 1) = idAlerta limit 1), 'umidade ideal') as 'StatusDeAlerta',
+t.nome as 'tecido'
+from empresa as e
+join lugar as lu on e.idEmpresa = lu.fkEmpresa
+join tecido as t on lu.fkTecido = t.idTecido
+join sensor as s on lu.idLugar = s.fkLugar
+join leitura as le on s.idSensor = le.fkSensor
+left join alerta as a on le.fkAlerta = a.idAlerta
+group by s.idSensor;
 
-    IFNULL(a.tipo, 'umidade ideal') AS StatusDeAlerta
-
-FROM empresa e
-
-JOIN lugar lu
-    ON e.idEmpresa = lu.fkEmpresa
-
-JOIN tecido t
-    ON lu.fkTecido = t.idTecido
-
-JOIN sensor s
-    ON lu.idLugar = s.fkLugar
-
-JOIN leitura le
-    ON le.idLeitura = (
-        SELECT idLeitura
-        FROM leitura
-        WHERE fkSensor = s.idSensor
-        ORDER BY dtLeitura DESC
-        LIMIT 1
-    )
-
-LEFT JOIN alerta a
-    ON le.fkAlerta = a.idAlerta;
-/**/
 
 select tipo from alerta where 1 = idAlerta limit 1;
 
