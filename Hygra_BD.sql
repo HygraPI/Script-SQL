@@ -235,7 +235,7 @@ lu.setor as 'idSetor',
 s.idSensor as 'idSensor',
 (select umidade from leitura as le where le.fkSensor = s.idSensor order by le.dtLeitura desc limit 1) AS 'leitura',
 max(le.dtLeitura) as 'data',
-ifnull((select tipo from alerta where (select fkAlerta from leitura where fkSensor = s.idSensor limit 1) = idAlerta limit 1), 'umidade ideal') as 'StatusDeAlerta',
+IFNULL((select a.tipo from alerta a join leitura l on l.fkAlerta = a.idAlerta where l.fkSensor = s.idSensor order by l.dtLeitura desc limit 1), 'umidade ideal') AS StatusDeAlerta,
 t.nome as 'tecido'
 from empresa as e
 join lugar as lu on e.idEmpresa = lu.fkEmpresa
@@ -245,18 +245,6 @@ join leitura as le on s.idSensor = le.fkSensor
 left join alerta as a on le.fkAlerta = a.idAlerta
 group by s.idSensor;
 
-/*
-select tipo from alerta as a
-join leitura as le on le.fkAlerta = a.idAlerta
-join sensor as s on s.idSensor = le.fkSensor
-where (select fkAlerta from leitura where fkSensor = 8 limit 1) = idAlerta limit 1;
-
-select fkAlerta from leitura where fkSensor = s.idSensor limit 1;
-
-select * from leitura where fkSensor = 8 order by idLeitura desc;
-select * from alerta;
-
-*/
 
 
 
