@@ -52,10 +52,10 @@ minUmidade float not null
 );
 
 insert into tecido(nome, maxUmidade, minUmidade) values
-('Seda', 40, 50),
-('Lã', 55, 65),
-('Algodão', 45, 55),
-('Linho', 50, 60);
+('Seda', 55, 45),
+('Lã', 65, 55),
+('Algodão', 50, 40),
+('Linho', 60, 50);
 
 select * from tecido;
 
