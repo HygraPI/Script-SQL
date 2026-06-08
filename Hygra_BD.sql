@@ -6,19 +6,20 @@ CREATE TABLE empresa (
 idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
 nomeEmpresa VARCHAR (45) NOT NULL,
 cnpj VARCHAR (20) NOT NULL,
+emailEmpresa varchar (50) NOT NULL,
 cidade VARCHAR (45) NOT NULL,
 estado VARCHAR (45) NOT NULL,
 codigo_ativacao CHAR(5) NOT NULL
 );
 
 INSERT INTO empresa values
-(DEFAULT, 'Renner', '92754738000162', 'Cabreúva', 'São Paulo', 'EDGWO'),
-(DEFAULT, 'C&A','45242914000105', 'São Paulo', 'São Paulo', 'SVKEO'),
-(DEFAULT, 'Riachuelo', '33200056000149', 'Natal', 'Rio Grande do Norte', 'POMTS'),
-(DEFAULT, 'Lacoste', '29511391000190', 'Brusque', 'Santa Catarina', 'RTSNJ'),
-(DEFAULT, 'Levis', '43351097000190', 'São Paulo', 'São Paulo', 'OASJG'),
-(DEFAULT, 'Pernambucanas', '42106529000134', 'Ribeirão preto',  'São Paulo', 'PTIYM'),
-(DEFAULT, 'Hering', '78876950000171', 'São Paulo', 'São Paulo', 'ASAIE');
+(DEFAULT, 'Renner', '92754738000162', 'empresa1@gmail.com', 'Cabreúva', 'São Paulo', 'EDGWO'),
+(DEFAULT, 'C&A','45242914000105', 'empresa2@gmail.com', 'São Paulo', 'São Paulo', 'SVKEO'),
+(DEFAULT, 'Riachuelo', '33200056000149', 'empresa3@gmail.com', 'Natal', 'Rio Grande do Norte', 'POMTS'),
+(DEFAULT, 'Lacoste', '29511391000190', 'empresa4@gmail.com', 'Brusque', 'Santa Catarina', 'RTSNJ'),
+(DEFAULT, 'Levis', '43351097000190', 'empresa5@gmail.com', 'São Paulo', 'São Paulo', 'OASJG'),
+(DEFAULT, 'Pernambucanas', '42106529000134', 'empresa6@gmail.com', 'Ribeirão preto',  'São Paulo', 'PTIYM'),
+(DEFAULT, 'Hering', '78876950000171', 'empresa7@gmail.com', 'São Paulo', 'São Paulo', 'ASAIE');
 
 SELECT * FROM empresa;
 
@@ -35,6 +36,7 @@ CONSTRAINT fkEmpresa FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
 
 INSERT INTO usuario VALUES
 (DEFAULT, 'Fabio Adegas Faccio', 'fabioadegas@gmail.com', 'fabioadegas123', '12345678901', 'Suporte', 1),
+(DEFAULT, 'Henrique Rezende', 'henrique@gmail.com', '123', '12345678905', 'padrao', 1),
 (DEFAULT, 'Paulo Correa', 'paulocorrea@outlook.com', 'paulo123', '22345678901', default, 2),
 (DEFAULT, 'Flávio Rocha', 'flaviorocha@gmail.com', 'flaviorocha123', '32345678901', 'Suporte', 3),
 (DEFAULT, 'Éric Vallat', 'ericvallat@outlook.com', 'vallat123', '42345678901', default, 4),
@@ -96,7 +98,10 @@ INSERT INTO sensor VALUES
 (DEFAULT, 4),
 (DEFAULT, 5),
 (DEFAULT, 6),
-(DEFAULT, 7);
+(DEFAULT, 7),
+(default, 7),
+(default, 7),
+(default, 7);
 
 SELECT * FROM sensor;
 
@@ -196,7 +201,7 @@ WHERE alerta.tipo IS NOT NULL
 ORDER BY dtLeitura DESC
 LIMIT 1;
 
-alter VIEW Viewgraficos AS SELECT 
+create VIEW Viewgraficos AS SELECT 
 idEmpresa AS 'ID',
 nomeEmpresa AS 'Empresa', 
 lugar.tipo AS 'Tipo de lugar',  
@@ -228,7 +233,7 @@ e.nomeEmpresa as 'nomeEmpresa',
 lu.idLugar as 'idLugar', 
 lu.setor as 'idSetor', 
 s.idSensor as 'idSensor',
-(select umidade from leitura where fkSensor = s.idSensor order by umidade desc limit 1) AS 'leitura',
+(select umidade from leitura as le where le.fkSensor = s.idSensor order by le.dtLeitura desc limit 1) AS 'leitura',
 max(le.dtLeitura) as 'data',
 ifnull((select tipo from alerta where (select fkAlerta from leitura where fkSensor = s.idSensor limit 1) = idAlerta limit 1), 'umidade ideal') as 'StatusDeAlerta',
 t.nome as 'tecido'
@@ -240,10 +245,24 @@ join leitura as le on s.idSensor = le.fkSensor
 left join alerta as a on le.fkAlerta = a.idAlerta
 group by s.idSensor;
 
+/*
+select tipo from alerta as a
+join leitura as le on le.fkAlerta = a.idAlerta
+join sensor as s on s.idSensor = le.fkSensor
+where (select fkAlerta from leitura where fkSensor = 8 limit 1) = idAlerta limit 1;
 
-select tipo from alerta where 1 = idAlerta limit 1;
+select fkAlerta from leitura where fkSensor = s.idSensor limit 1;
 
-select * from vw_sensoresPorEmpresa;
+select * from leitura where fkSensor = 8 order by idLeitura desc;
+select * from alerta;
+
+*/
+
+
+
+select * from leitura order by idLeitura desc;
+select * from vw_sensoresPorEmpresa where idEmpresa = 1;
+select * from usuario;
 select * from vw_sensoresPorEmpresa where idEmpresa = 1;
 select * from sensor;
 select * from alerta;
